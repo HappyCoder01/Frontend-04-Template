@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TicTacToe二维数组</title>
+  <style>
+    #board {
+      width: 150px;
+      height: 150px;
+      margin: 40px auto;
+    }
+
+    .cell {
+      display: inline-block;
+      background-color: green;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      font-size: 30px;
+      border: 1px solid #ffffff;
+      vertical-align: middle;
+      text-align: center;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+<div id="board"></div>
+<script>
+  let pattern = [
+    [0, 0, 0],
+    [0, 2, 0],
+    [0, 0, 0]
+  ];
+  let color = 1;
+
+  function show() {
+    let board = document.getElementById('board');
+    board.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        let cell = document.createElement("div");
+        cell.classList.add('cell');
+        cell.innerText = pattern[i][j] === 0 ? '' :
+            pattern[i][j] === 1 ? '✖️' : '⭕️';
+        cell.addEventListener('click', () => {
+          fillPiece(i, j);
+        });
+        board.appendChild(cell);
+      }
+      board.appendChild(document.createElement("br"));
+    }
+  }
+
+  // 填充棋子
+  function fillPiece(i, j) {
+    pattern[i][j] = color;
+    show();
+    if (check(pattern, color)) {
+      alert(`${color === 1 ? '✖️' : '⭕️'} is winner!`)
+    }
+    color = 3 - color;
+    // 人机对战后，机器不会输，willWin无意义了。
+    // if (willWin(pattern, color)) {
+    //   console.log(`${color === 1 ? '✖️' : '⭕️'} will win!`)
+    // }
+    useBestChoice();
+  }
+
+  function useBestChoice() {
+    let choice = bestChoice(pattern, color);
+    if (choice.point)
+      pattern[choice.point[0]][choice.point[1]] = color;
+    if (check(pattern, color)) {
+      alert(`${color === 1 ? '✖️' : '⭕️'} is winner!`)
+    }
+    color = 3 - color;
+    show();
+  }
+
+  function check(pattern, color) {
+    // 检查三横
+    for (let i = 0; i < 3; i++) {
+      let win = true;
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i][j] !== color) {
+          win = false;
+        }
+      }
+      if (win) {
+        return true;
+      }
+    }
+
+    // 检查三竖
+    for (let i = 0; i < 3; i++) {
+      let win = true;
+      for (let j = 0; j < 3; j++) {
+        if (pattern[j][i] !== color) {
+          win = false;
+        }
+      }
+      if (win) {
+        return true;
+      }
+    }
+
+    // 检查左上到右下的斜线
+    {
+      let win = true;
+      for (let i = 0; i < 3; i++) {
+        if (pattern[i][i] !== color) {
+          win = false;
+        }
+      }
+      if (win) {
+        return true;
+      }
+    }
+
+    // 检查右上到左下的斜线
+    {
+      let win = true;
+      for (let i = 0; i < 3; i++) {
+        if (pattern[i][2 - i] !== color) {
+          win = false;
+        }
+      }
+      if (win) {
+        return true;
+      }
+    }
+  }
+
+  function willWin(pattern, color) {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i][j])
+          continue
+        let tempPattern = clone(pattern);
+        tempPattern[i][j] = color;
+        if (check(tempPattern, color)) {
+          return [i, j];
+        }
+      }
+    }
+  }
+
+  function clone(data) {
+    return JSON.parse(JSON.stringify(data));
+  }
+
+  function bestChoice(pattern, color) {
+    let p = willWin(pattern, color);
+    if (p) {
+      return {
+        result: 1,
+        point: p
+      }
+    }
+
+    let result = -2;
+    let point = null;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i][j])
+          continue
+        let tempPattern = clone(pattern);
+        tempPattern[i][j] = color;
+        let r = bestChoice(tempPattern, 3 - color).result;
+        if (-r > result) {
+          result = -r;
+          point = [i, j];
+        }
+      }
+    }
+
+    return {
+      point: point,
+      result: point ? result : 0
+    }
+  }
+
+  show();
+</script>
+</body>
+</html>
