@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>启发式寻路(二)</title>
+  <style>
+    #container {
+      width: 701px;
+      line-height: 3px;
+    }
+
+    .cell {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: gray;
+      border-top: none;
+      border-left: none;
+      border-bottom: 1px solid #ffffff;
+      border-right: 1px solid #ffffff;
+    }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+<button onclick="save()">保存</button>
+<script>
+  let map = localStorage.getItem('map') ? JSON.parse(localStorage.getItem('map')) : Array(10000).fill(0);
+
+  function save() {
+    localStorage.setItem('map', JSON.stringify(map));
+    alert('保存成功')
+  }
+
+  let container = document.getElementById('container');
+  for (let y = 0; y < 100; y++) {
+    for (let x = 0; x < 100; x++) {
+      let cell = document.createElement("div");
+      cell.classList.add('cell');
+      if (map[y * 100 + x] === 1) {
+        cell.style.backgroundColor = 'black';
+      }
+      cell.addEventListener('mousemove', () => {
+        if (mouseDown) {
+          if (clear) {
+            map[y * 100 + x] = 0;
+            cell.style.backgroundColor = '';
+          } else {
+            map[y * 100 + x] = 1;
+            cell.style.backgroundColor = 'black';
+          }
+        }
+      })
+      container.appendChild(cell);
+    }
+  }
+
+  let mouseDown = false;
+  let clear = false;
+  document.addEventListener('mousedown', (e) => {
+    mouseDown = true;
+    clear = e.which === 3;
+  })
+  document.addEventListener('mouseup', () => mouseDown = false);
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  async function findPath(map, start, end) {
+    let queue = new Sorted([start], (a, b) => distance(a) - distance(b));
+    let table = Object.create(map);
+
+    function distance(point) {
+      return (end[0] - point[0]) ** 2 + (end[1] - point[1]) ** 2;
+    }
+
+    async function insert(x, y, pre) {
+      if (x < 0 || x >= 100 || y < 0 || y >= 100) {
+        return;
+      }
+      if (map[y * 100 + x]) {
+        return;
+      }
+      await sleep(10);
+      container.children[y * 100 + x].style.backgroundColor = "lightgreen"
+      map[y * 100 + x] = 2;
+      table[y * 100 + x] = pre;
+      queue.give([x, y]);
+    }
+
+    while (queue.data.length) {
+      let [x, y] = queue.take();
+      if (x === end[0] && y === end[1]) {
+        let path = [];
+        path.push([x, y]);
+        container.children[y * 100 + x].style.backgroundColor = 'purple';
+        while (x !== start[0] || y !== start[1]) {
+          await sleep(10);
+          [x, y] = table[y * 100 + x];
+          path.push([x, y]);
+          container.children[y * 100 + x].style.backgroundColor = 'purple';
+        }
+        return path;
+      }
+      await insert(x - 1, y, [x, y]);
+      await insert(x, y - 1, [x, y]);
+      await insert(x + 1, y, [x, y]);
+      await insert(x, y + 1, [x, y]);
+
+      await insert(x - 1, y - 1, [x, y]);
+      await insert(x + 1, y - 1, [x, y]);
+      await insert(x + 1, y + 1, [x, y]);
+      await insert(x - 1, y + 1, [x, y]);
+    }
+    return false;
+  }
+
+  function sleep(t) {
+    return new Promise(resolve => setTimeout(resolve, t));
+  }
+
+  class Sorted {
+    constructor(data, compare) {
+      this.data = data.slice();
+      this.compare = compare || ((a, b) => a - b);
+    }
+
+    take() {
+      if (!this.data || !this.data.length) {
+        return;
+      }
+      let min = this.data[0];
+      let minIndex = 0;
+      for (let i = 0; i < this.data.length; i++) {
+        if (this.compare(this.data[i], min) < 0) {
+          min = this.data[i];
+          minIndex = i;
+        }
+      }
+
+      this.data[minIndex] = this.data[this.data.length - 1];
+      this.data.pop();
+      return min;
+    }
+
+    give(v) {
+      this.data.push(v);
+    }
+  }
+</script>
+</body>
+</html>
