@@ -1,0 +1,4 @@
+1、数据描述语言：
+JSON、XML、HTML、SQL、CSS
+2、编程语言：
+C、C++、C#、Java、VB、PHP、Python、Ruby、Perl、Go、Object-c、Delphi、Javascript

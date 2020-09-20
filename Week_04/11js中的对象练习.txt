@@ -1,0 +1,3 @@
+1、Array对象，length属性 会根据数组长度自动变化
+2、String对象，通过数字下标，可以访问到索引位置的字符
+3、Object.prototype对象，无法给Object.prototype设置原型了

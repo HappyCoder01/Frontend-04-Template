@@ -1,0 +1,8 @@
+<MultiplicativeExpression>::=(<Number>|(<MultiplicativeExpression>|
+  <Number>|
+  <MultiplicativeExpression>"*"<Number>|<Number>)|
+  <MultiplicativeExpression>"/"<Number>|<Number>)
+<AddtiveExpression>::=(<MultiplicativeExpression>|(<AddtiveExpression>
+  |<MultiplicativeExpression>|
+  <AddtiveExpression>"+"<MultiplicativeExpression>|<MultiplicativeExpression>)|
+  <AddtiveExpression>"-"<MultiplicativeExpression>|<MultiplicativeExpression>)
