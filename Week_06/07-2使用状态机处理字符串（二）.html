@@ -1,0 +1,46 @@
+<script>
+    function match(str) {
+        let state = start;
+        for (let v of str) {
+            state = state(v);
+            if (state === end) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function start(v) {
+        return v === 'a' ? findA : start;
+    }
+
+    function end(v) {
+        return end;
+    }
+
+    function findA(v) {
+        return v === 'b' ? findB : start(v);
+    }
+
+    function findB(v) {
+        return v === 'a' ? findA2 : start(v);
+    }
+
+    function findA2(v) {
+        return v === 'b' ? findB2 : start(v);
+    }
+
+    function findB2(v) {
+        return v === 'a' ? findA3 : start(v);
+    }
+
+    function findA3(v) {
+        return v === 'b' ? findB3 : start(v);
+    }
+
+    function findB3(v) {
+        return v === 'x' ? end : findB2(v);
+    }
+
+    match('abababx')
+</script>

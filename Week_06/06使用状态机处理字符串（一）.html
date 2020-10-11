@@ -1,0 +1,60 @@
+<script>
+    function match(str) {
+        let state = start;
+        for (let v of str) {
+            state = state(v);
+            if (state === end) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function start(v) {
+        if (v === 'a')
+            return findA;
+        else
+            return start;
+    }
+
+    function end(v) {
+        return end;
+    }
+
+    function findA(v) {
+        if (v === 'b')
+            return findB;
+        else
+            return start(v);
+    }
+
+    function findB(v) {
+        if (v === 'c')
+            return findC;
+        else
+            return start(v);
+    }
+
+    function findC(v) {
+        if (v === 'd')
+            return findD;
+        else
+            return start(v);
+    }
+
+    function findD(v) {
+        if (v === 'e')
+            return findE;
+        else
+            return start(v);
+    }
+
+    function findE(v) {
+        if (v === 'f')
+            return end;
+        else
+            return start(v);
+    }
+
+    match('123abcdef')
+</script>
