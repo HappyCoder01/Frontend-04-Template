@@ -1,0 +1,58 @@
+1、事件API
+target.addEventListener(type, listener, options);
+target.addEventListener(type, listener, useCapture);
+options 可选
+一个指定有关 listener 属性的可选参数对象。可用的选项如下：
+capture:  Boolean，表示 listener 会在该类型的事件捕获阶段传播到该 EventTarget 时触发。
+once:  Boolean，表示 listener 在添加之后最多只调用一次。如果是 true， listener 会在其被调用之后自动移除。
+passive: Boolean，设置为true时，表示 listener 永远不会调用 preventDefault()。如果 listener 仍然调用了这个函数，客户端将会忽略它并抛出一个控制台警告。查看 使用 passive 改善的滚屏性能 了解更多.
+mozSystemGroup: 只能在 XBL 或者是 Firefox' chrome 使用，这是个 Boolean，表示 listener 被添加到 system group。
+
+注意：对于实际触发事件的事件源dom节点，chrome下的表现，先绑定捕获阶段、冒泡阶段对于事件触发顺序是有影响的先添加哪个事件回掉
+则先触发哪个。但是对于其外层的dom事件而言，顺序都是先捕获阶段在冒泡阶段。
+
+2、DOM API
+导航类：node下会有各种回车换行之类的文本节点，如果找element一般可以用element组api
+node组      parentNode、childNodes、firstChild、lastChild、nextSibling、previousSibling
+element组   parentElement、children、firstElementChild、lastElementChild、nextElementSibling、previousElementSibling
+修改类：
+appendChild、insertBefore、removeChild、replaceChild
+高级操作：
+compareDocumentPosition 用于比较两个节点中关系的函数
+contains 检查一个节点是否包含另一个节点
+isEqualNodes 检查两个节点是否完全相同
+isSameNode 是否为同一节点 可以用====
+cloneNode 复制一个节点，如果传入参数true，则会连同子节点做深拷贝
+
+3、range API
+创建range
+var range = new Range()
+var range = document.getSelection().getRangeAt(0)
+设置range: 对于文本节点偏移量是文字，对于节点偏移量是children
+setStart(element, offset)、setEnd(element, offset)、
+setStartBefore、setEndBefore、setStartAfter、setEndAfter
+selectNode、selectNodeContents
+删除、增加内容：
+var fragment = range.extractContents();
+range.insertNode(document.createTextNode('aaa'));
+
+4、CSSOM 对应的是css的部分
+
+5、CSSOM View部分：
+window.innerHeight window.innerWidth
+window.outerHeight window.outerHeight
+window.screen.height window.screen.width
+window.screen.availHeight window.screen.availWidth
+window.devicePixelRatio
+
+scroll
+element: scrollTop、scrollLeft、scrollWidth、scrollHeight、scroll(x,y)、scrollBy(x,y)、scrollIntoView()
+window:scrollX、scrollY、scroll(x,y)、scrollBy(x,u)
+
+layout
+getClientRects、getBoundingClientRect
+盒对象返回的属性x、y、left、right、top、bottom、width、height 是layout阶段的产物，相对的是viewport可视区
+当有滚动是，滚动前后相对可视区位置有变化，相关的参数也会有变化
+
+
+

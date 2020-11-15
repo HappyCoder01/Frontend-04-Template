@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    let names = Object.getOwnPropertyNames(window);
+    //  ecma 语法相关
+    let arrEcmaKeys = ["Object", "Function", "Array", "Number", "parseFloat", "parseInt", "Infinity", "NaN", "undefined", "Boolean", "String", "Symbol", "Date", "Promise", "RegExp", "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "globalThis", "JSON", "Math", "console", "Intl", "ArrayBuffer", "Uint8Array", "Int8Array", "Uint16Array", "Int16Array", "Uint32Array", "Int32Array", "Float32Array", "Float64Array", "Uint8ClampedArray", "BigUint64Array", "BigInt64Array", "DataView", "Map", "BigInt", "Set", "WeakMap", "WeakSet", "Proxy", "Reflect"];
+    names = names.filter((name) => arrEcmaKeys.indexOf(name) === -1);
+
+    // Node 的子类
+    names = names.filter((name)=> {
+        try {
+            return !(window[name].prototype instanceof Node)
+        }catch (e) {
+            return true;
+        }
+    });
+
+    // 事件相关的
+    names = names.filter(name=>!name.match(/^on/));
+
+    // WebGl 相关的
+    names = names.filter(name=>!name.match(/^WebGL/));
+
+    // SVG 相关的
+    names = names.filter(name=>!name.match(/^SVG/));
+
+    // RTC 相关的
+    names = names.filter(name=>!name.match(/^RTC/));
+    console.log(names);
+
+    // webkit 相关的
+    names = names.filter(name=>!name.match(/^webkit/));
+
+    // CSS 相关的
+    names = names.filter(name=>!name.match(/^CSS/));
+    console.log(names);
+</script>
+</body>
+</html>

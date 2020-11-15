@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="container">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+</div>
+<script>
+    // 解法一纯dom
+    // function reverse() {
+    //     let container = document.getElementById('container');
+    //     let l = container.children.length - 2;
+    //     while (l >= 0) {
+    //         container.appendChild(container.children[l]);
+    //         l --;
+    //     }
+    // }
+    // reverse();
+
+    // 解法二 rangeAPI
+    function reverse2() {
+        let container = document.getElementById('container');
+        let range = new Range();
+        range.selectNodeContents(container);
+        let fragment = range.extractContents();
+        let l = fragment.children.length - 2;
+        while (l >= 0){
+            fragment.appendChild(fragment.children[l]);
+            l --;
+        }
+        container.appendChild(fragment);
+    }
+    reverse2();
+</script>
+</body>
+</html>
